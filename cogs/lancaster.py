@@ -71,34 +71,30 @@ class Lancaster(BaseCog):
             content = await resp.text()
             soup = BeautifulSoup(content, "lxml")
             rows = soup.select_one("tbody").find_all("tr")
+
             for row in rows:
                 icon, group, author, *other = row.find_all("td")
-                if not group.text.strip():
-                    title = row.select_one("th").text.strip()
-                    avatar = author.select_one("img")["src"]
-                    _id = re.findall(
-                        r"[?&]d=(\d+)$", row.select_one("th a")["href"].strip()
-                    )[0]
+                title = row.select_one("th").text.strip()
+                avatar = author.select_one("img")["src"]
+                _id = re.findall(
+                    r"[?&]d=(\d+)$", row.select_one("th a")["href"].strip()
+                )[0]
 
-                    if title.endswith("Locked"):
-                        title = title[:-6]
+                if title.endswith("Locked"):
+                    title = title[:-6]
 
-                    author_name, date = author.select_one(".author-info").find_all(
-                        "div"
-                    )
+                author_name, date = author.select_one(".author-info").find_all("div")
 
-                    announcement = {
-                        "title": title.strip(),
-                        "author": author_name.text.strip(),
-                        "date": datetime.datetime.strptime(
-                            date.text.strip(), "%d %b %Y"
-                        ),
-                        "url": "https://modules.lancaster.ac.uk/mod/forum/discuss.php?d="
-                        + str(_id),
-                        "avatar": avatar,
-                        "id": _id,
-                    }
-                    announcements.append(announcement)
+                announcement = {
+                    "title": title.strip(),
+                    "author": author_name.text.strip(),
+                    "date": datetime.datetime.strptime(date.text.strip(), "%d %b %Y"),
+                    "url": "https://modules.lancaster.ac.uk/mod/forum/discuss.php?d="
+                    + str(_id),
+                    "avatar": avatar,
+                    "id": _id,
+                }
+                announcements.append(announcement)
 
         latest = sorted(announcements, key=lambda x: x["date"], reverse=True)
         return latest
