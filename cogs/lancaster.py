@@ -134,11 +134,6 @@ class Lancaster(BaseCog):
         embed.set_author(name=data["author"], icon_url=data["avatar"])
         return embed
 
-    @commands.command()
-    async def cleardb(self, ctx):
-        await self.moodle_posts.delete_records()
-        await ctx.send("done")
-
     @commands.is_owner()
     @commands.command()
     async def announcementchannel(self, ctx, channel: discord.TextChannel = None):

@@ -14,7 +14,7 @@ class LancasterUniBot(commands.Bot):
         super().__init__(command_prefix=prefix)
         self.login_data = login_data
         self.database_url = database_url
-        self.database = Database(self.database_url)
+        self.database = Database(self.database_url, ssl=True)
         self.load_extension("cogs.general")
         self.load_extension("cogs.lancaster")
         self.logger = logging.getLogger(__name__)

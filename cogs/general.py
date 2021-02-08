@@ -115,20 +115,6 @@ class General(BaseCog):
             await ctx.send("```py\n{}```".format(e))
 
     @commands.command()
-    async def created(self, ctx, _id: int):
-        m = await ctx.channel.fetch_message(_id)
-        await ctx.send(m.created_at)
-
-    @commands.is_owner()
-    @commands.command(hidden=True)
-    async def storage(self, ctx):
-        """Get the size of the database."""
-        async with self.bot.database.connection() as conn:
-            size = await conn.fetchrow("SELECT pg_database_size('ludb')")
-        human_size = humanize.naturalsize(size["pg_database_size"])
-        await ctx.send(embed=MessageBox.info(f"Database Size: `{human_size}`"))
-
-    @commands.command()
     async def uptime(self, ctx):
         """Displays how long I've been online for."""
         uptime = datetime.datetime.now() - self.start_time
@@ -171,21 +157,6 @@ class General(BaseCog):
             )
 
         await ctx.send(embed=embed)
-
-    @commands.command(aliases=["nick"])
-    @commands.cooldown(rate=3, per=3600, type=commands.BucketType.user)
-    async def nickname(self, ctx, *, name):
-        """Set your nickname."""
-        nickname = ctx.author.display_name.split("||")[-1].strip()
-        if nickname:
-            nick_length = len(" || " + nickname)
-            max_len = 32 - nick_length
-            new_nick = name[:max_len] + " || " + nickname
-        else:
-            new_nick = name[:32]
-
-        await ctx.author.edit(nick=new_nick)
-        await ctx.message.add_reaction("👍")
 
     @commands.command()
     async def deadchannels(self, ctx, limit: int = 10):
