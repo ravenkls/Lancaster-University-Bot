@@ -164,7 +164,7 @@ class Database:
     settings_table = "server_setting"
 
     def __init__(self, url, ssl=False):
-        self.url = url + ("&sslmode=require" if ssl else "")
+        self.url = url + ("?sslmode=require" if ssl else "")
 
     async def connect(self):
         await self.new_table(
