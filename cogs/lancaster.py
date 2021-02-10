@@ -12,6 +12,7 @@ from async_lru import alru_cache
 from bs4 import BeautifulSoup
 from dateutil import parser
 from discord.ext import commands, tasks
+from markdownify import markdownify
 from dateutil.parser import isoparse
 
 from .base import BaseCog
@@ -102,19 +103,22 @@ class Lancaster(BaseCog):
     @alru_cache(maxsize=100)
     async def get_extra_details(self, _id):
         session = await self.login_to_portal(*self.bot.login_data)
-        resp = await session.get(
-            f"https://modules.lancaster.ac.uk/mod/forum/discuss.php?d={_id}"
-        )
+        url = f"https://modules.lancaster.ac.uk/mod/forum/discuss.php?d={_id}"
+        resp = await session.get(url)
         content = await resp.text()
         soup = BeautifulSoup(content, "lxml")
+
+        description = markdownify(str(soup.select_one(".post-content-container")))
+        read_more_button = f"...\n\n[Read The Rest On Moodle]({url})"
+        max_length = 2048 - len(read_more_button)
+        if len(description) > max_length:
+            description = description[:max_length] + read_more_button
+
         return {
-            "description": "\n\n".join(
-                [
-                    x.text
-                    for x in soup.select_one(".post-content-container").find_all("p")
-                ]
-            )[:1000],
-            "date": isoparse(soup.select_one("time")["datetime"]),
+            "description": description,
+            "date": isoparse(soup.select_one("time")["datetime"]).strftime(
+                "%A, %d %B %Y, %H:%M"
+            ),
         }
 
     async def news_embed(self, data):
@@ -124,10 +128,10 @@ class Lancaster(BaseCog):
             title=data["title"],
             url=data["url"],
             colour=0xFF0000,
-            timestamp=details["date"],
             description=details["description"],
         )
         embed.set_author(name=data["author"], icon_url=data["avatar"])
+        embed.set_footer(text=details["date"])
         return embed
 
     @commands.is_owner()

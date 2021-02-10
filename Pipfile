@@ -13,6 +13,7 @@ lxml = "*"
 xmltodict = "*"
 python-dateutil = "*"
 async-lru = "*"
+markdownify = "*"
 
 [dev-packages]
 
