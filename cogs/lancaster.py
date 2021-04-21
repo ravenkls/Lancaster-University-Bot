@@ -32,7 +32,7 @@ class Lancaster(BaseCog):
             "demographics_roles",
             (BigInteger("guild_id"), Varchar("post_id", 1000)),
         )
-        self.check_for_announcements_task.start()
+        # self.check_for_announcements_task.start()
 
     @alru_cache(maxsize=10)
     async def login_to_portal(self, username, password):
@@ -58,6 +58,30 @@ class Lancaster(BaseCog):
         html = await resp.text()
         if "You are logged into" in html:
             return session
+
+    async def get_profile_picture(self, name):
+        session = await self.login_to_portal(*self.bot.login_data)
+
+        slug = "-".join(name.lower().split())
+        resp = await session.get(
+            "https://www.lancaster.ac.uk/scc/about-us/people/" + slug
+        )
+
+        if resp.status_code != 200:
+            return None
+
+        text = await resp.text()
+        soup = BeautifulSoup(text, "lxml")
+
+        return soup.select_one(".image-wrapper img").get("src")
+
+    @commands.command()
+    async def profile(self, ctx, *, name):
+        profile = await self.get_profile_picture(name)
+        if profile is not None:
+            await ctx.send(profile)
+        else:
+            await ctx.send("Not found.")
 
     async def get_news(self):
         with open(os.path.join("data", "forums.json")) as forums_file:
