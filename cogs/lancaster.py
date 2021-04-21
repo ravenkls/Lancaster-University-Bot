@@ -67,7 +67,7 @@ class Lancaster(BaseCog):
             "https://www.lancaster.ac.uk/scc/about-us/people/" + slug
         )
 
-        if resp.status_code != 200:
+        if resp.status != 200:
             return None
 
         text = await resp.text()
