@@ -110,6 +110,10 @@ class Lancaster(BaseCog):
 
                 author_name, date = author.select_one(".author-info").find_all("div")
 
+                pfp = await self.get_profile_picture(author_name.text.strip())
+                if pfp is not None:
+                    avatar = pfp
+
                 announcement = {
                     "title": title.strip(),
                     "author": author_name.text.strip(),
