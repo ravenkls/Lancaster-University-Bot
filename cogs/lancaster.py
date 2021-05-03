@@ -32,7 +32,7 @@ class Lancaster(BaseCog):
             "demographics_roles",
             (BigInteger("guild_id"), Varchar("post_id", 1000)),
         )
-        # self.check_for_announcements_task.start()
+        self.check_for_announcements_task.start()
 
     @alru_cache(maxsize=10)
     async def login_to_portal(self, username, password):
