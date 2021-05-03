@@ -180,15 +180,20 @@ class Lancaster(BaseCog):
         if channel_id:
             return guild.get_channel(int(channel_id))
 
+    @alru_cache(maxsize=1000)
+    async def check_moodle_post_exists(self, guild_id, post_id):
+        exists = await self.moodle_posts.filter(
+            where=DBFilter(guild_id=guild_id, post_id=post_id)
+        )
+        return exists
+
     async def check_for_announcements(self):
         self.logger.info("Checking for new announcements.")
         announcements = await self.get_news()
         n = 0
         for news in reversed(announcements):
             for guild in self.bot.guilds:
-                exists = await self.moodle_posts.filter(
-                    where=DBFilter(guild_id=guild.id, post_id=news["id"])
-                )
+                exists = await check_moodle_post_exists(guild.id, news["id"])
                 if not exists:
                     channel = await self.get_announcement_channel(guild)
                     if channel:
