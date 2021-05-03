@@ -193,7 +193,7 @@ class Lancaster(BaseCog):
         n = 0
         for news in reversed(announcements):
             for guild in self.bot.guilds:
-                exists = await check_moodle_post_exists(guild.id, news["id"])
+                exists = await self.check_moodle_post_exists(guild.id, news["id"])
                 if not exists:
                     channel = await self.get_announcement_channel(guild)
                     if channel:
