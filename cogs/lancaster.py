@@ -184,7 +184,7 @@ class Lancaster(BaseCog):
         self.logger.info("Checking for new announcements.")
         announcements = await self.get_news()
         n = 0
-        for news in reversed(announcements[:5]):
+        for news in reversed(announcements):
             for guild in self.bot.guilds:
                 exists = await self.moodle_posts.filter(
                     where=DBFilter(guild_id=guild.id, post_id=news["id"])
