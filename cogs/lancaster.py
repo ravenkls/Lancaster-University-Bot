@@ -185,7 +185,7 @@ class Lancaster(BaseCog):
         exists = await self.moodle_posts.filter(
             where=DBFilter(guild_id=guild_id, post_id=post_id)
         )
-        return exists
+        return bool(exists)
 
     async def check_for_announcements(self):
         self.logger.info("Checking for new announcements.")
