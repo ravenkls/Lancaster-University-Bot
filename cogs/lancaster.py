@@ -180,10 +180,9 @@ class Lancaster(BaseCog):
         if channel_id:
             return guild.get_channel(int(channel_id))
 
-    @alru_cache(maxsize=1000)
     async def check_moodle_post_exists(self, guild_id, post_id):
         exists = await self.moodle_posts.filter(
-            where=DBFilter(guild_id=guild_id, post_id=post_id)
+            where=DBFilter(guild_id=int(guild_id), post_id=str(post_id))
         )
         return bool(exists)
 
