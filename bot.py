@@ -17,6 +17,7 @@ class LancasterUniBot(commands.Bot):
         self.database = Database(self.database_url, ssl=True)
         self.load_extension("cogs.general")
         self.load_extension("cogs.lancaster")
+        self.load_extension("cogs.monke")
         self.logger = logging.getLogger(__name__)
 
     async def on_connect(self):
