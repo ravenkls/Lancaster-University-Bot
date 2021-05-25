@@ -15,6 +15,7 @@ python-dateutil = "*"
 async-lru = "*"
 markdownify = "*"
 pillow = "*"
+pytz = "*"
 
 [dev-packages]
 

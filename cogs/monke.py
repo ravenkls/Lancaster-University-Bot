@@ -2,6 +2,7 @@ import os
 import json
 from discord.ext import commands
 import datetime
+import pytz
 
 from .base import BaseCog
 
@@ -14,7 +15,8 @@ class Monke(BaseCog):
             self.monke_days = json.load(f)
 
     def get_daily_video(self):
-        day = datetime.date.today().weekday()
+        tz = pytz.timezone("Europe/London")
+        day = datetime.datetime.now(tz).weekday()
         return self.monke_days[day]
 
     @commands.command()
